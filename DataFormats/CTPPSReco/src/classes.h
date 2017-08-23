@@ -12,6 +12,8 @@
 #include "DataFormats/CTPPSReco/interface/CTPPSDiamondRecHit.h"
 #include "DataFormats/CTPPSReco/interface/CTPPSDiamondLocalTrack.h"
 #include "DataFormats/CTPPSReco/interface/CTPPSPixelCluster.h"
+#include "DataFormats/CTPPSReco/interface/CTPPSPixelRecHit.h"
+#include "DataFormats/CTPPSReco/interface/CTPPSPixelLocalTrack.h"
 
 #include "DataFormats/CTPPSReco/interface/CTPPSLocalTrackLite.h"
 
@@ -79,6 +81,25 @@ namespace DataFormats_CTPPSReco {
     std::vector<edm::DetSet<CTPPSPixelCluster> > svdsrpcl;
     edm::DetSetVector<CTPPSPixelCluster> dsvrpcl;
     edm::Wrapper<edm::DetSetVector<CTPPSPixelCluster> > wdsvrpcl;
+
+    CTPPSPixelRecHit rprh;
+    edm::DetSet<CTPPSPixelRecHit> dsrprh;
+    std::vector<CTPPSPixelRecHit> svrprh;
+    std::vector<edm::DetSet<CTPPSPixelRecHit> > svdsrprh;
+    edm::DetSetVector<CTPPSPixelRecHit> dsvrprh;
+    edm::Wrapper<edm::DetSetVector<CTPPSPixelRecHit> > wdsvrprh;
+
+    CTPPSPixelLocalTrack rplt;
+    edm::DetSet<CTPPSPixelLocalTrack> dsrplt;
+    std::vector<CTPPSPixelLocalTrack> svrplt;
+    std::vector<edm::DetSet<CTPPSPixelLocalTrack> > svdsrplt;
+    edm::DetSetVector<CTPPSPixelLocalTrack> dsvrplt;
+    edm::Wrapper<edm::DetSetVector<CTPPSPixelLocalTrack> > wdsvrplt;
+    edm::DetSetVector<CTPPSPixelLocalTrack::CTPPSPixelFittedRecHit> dsvrplcfrh;
+    edm::Wrapper<edm::DetSetVector<CTPPSPixelLocalTrack::CTPPSPixelFittedRecHit>> wdsvrplcfrh;
+    std::vector<edm::DetSet<CTPPSPixelLocalTrack::CTPPSPixelFittedRecHit> > vdsrpltfrh;
+    std::vector<CTPPSPixelLocalTrack::CTPPSPixelFittedRecHit> vrpltfrh;
+
 
 
     //--- common objects

@@ -1,0 +1,40 @@
+/*
+ *
+* This is a part of CTPPS offline software.
+* Author:
+*   Fabrizio Ferro (ferro@ge.infn.it)
+*   Enrico Robutti (robutti@ge.infn.it)
+*   Fabio Ravera   (fabio.ravera@cern.ch)
+*
+*/
+#ifndef RecoCTPPS_PixelLocal_testPatternAlgorithm_H
+#define RecoCTPPS_PixelLocal_testPatternAlgorithm_H
+
+#include "FWCore/ParameterSet/interface/ParameterSet.h"
+#include "DataFormats/Common/interface/DetSetVector.h"
+#include "FWCore/ParameterSet/interface/ParameterSet.h"
+
+#include "DataFormats/CTPPSReco/interface/CTPPSPixelRecHit.h"
+#include "DataFormats/CTPPSDetId/interface/CTPPSPixelDetId.h"
+#include "RecoCTPPS/PixelLocal/interface/RPixDetPatternFinder.h"
+
+
+#include "Geometry/VeryForwardGeometryBuilder/interface/CTPPSGeometry.h"
+#include "CLHEP/Vector/ThreeVector.h"
+
+#include <vector>
+
+class testPatternAlgorithm : public RPixDetPatternFinder{
+  
+public:
+  testPatternAlgorithm(edm::ParameterSet const& parameterSet) : RPixDetPatternFinder(parameterSet) {}
+  ~testPatternAlgorithm() {}
+  
+  void findPattern() {
+    return;
+  }
+  
+  
+};
+
+#endif
