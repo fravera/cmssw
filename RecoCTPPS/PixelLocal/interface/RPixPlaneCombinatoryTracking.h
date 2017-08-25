@@ -20,6 +20,7 @@
 
 #include <vector>
 #include <map>
+#include "TH2D.h"
 
 
 class RPixPlaneCombinatoryTracking : public RPixDetTrackFinder{
@@ -52,8 +53,14 @@ class RPixPlaneCombinatoryTracking : public RPixDetTrackFinder{
     bool calculatePointOnDetector(CTPPSPixelLocalTrack track, CTPPSPixelDetId planeId, TVector3 &planeLineIntercept);
 
     inline uint32_t Factorial(uint32_t x) {
-      return (x <= 1 ? x : x * Factorial(x - 1));
+      if(x==0) return 1;
+      return (x == 1 ? x : x * Factorial(x - 1));
     }
+
+    TH2D *h2hitMapArm0;
+    TH2D *h2hitMapArm1;
+
+
 };
 
 #endif

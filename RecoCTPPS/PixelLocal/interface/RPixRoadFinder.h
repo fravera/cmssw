@@ -36,6 +36,7 @@
 
 #include <vector>
 #include <set>
+#include "TH2D.h"
 
 
 
@@ -53,6 +54,9 @@ class RPixRoadFinder : public RPixDetPatternFinder{
     unsigned int minRoadSize_;
     unsigned int maxRoadSize_;
     void run(const edm::DetSetVector<CTPPSPixelRecHit> &input, const CTPPSGeometry & geometry, std::vector<Road> &roads);
+
+    TH2D *h2hitMapArm0;
+    TH2D *h2hitMapArm1;
 
    
 };

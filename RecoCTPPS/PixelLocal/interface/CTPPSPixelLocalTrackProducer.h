@@ -38,6 +38,7 @@
 
 #include <string>
 #include <vector>
+#include "TH2D.h"
 
 class CTPPSPixelLocalTrackProducer : public edm::stream::EDProducer<>
 {
@@ -67,6 +68,10 @@ private:
   RPixDetTrackFinder   *trackFinder_;
   
   void run(const edm::DetSetVector<CTPPSPixelRecHit> &input, edm::DetSetVector<CTPPSPixelLocalTrack> &output);
+  
+    TH2D *h2hitMapArm0;
+    TH2D *h2hitMapArm1;
+
 
 };
 

@@ -21,7 +21,7 @@
 #include <memory>
 #include <string>
 #include <iostream>
-
+#include "TFile.h"
 
 //------------------------------------------------------------------------------------------------//
 
@@ -34,13 +34,21 @@ RPixRoadFinder::RPixRoadFinder(edm::ParameterSet const& parameterSet) :
   minRoadSize_ = param_.getParameter<int>("RPixMinRoadSize");
   maxRoadSize_ = param_.getParameter<int>("RPixMaxRoadSize");
 
+  h2hitMapArm0 = new TH2D("h2hitMapArm0","h2hitMapArm0",300,-15.,15.,200,-15.,15.);
+  h2hitMapArm1 = new TH2D("h2hitMapArm1","h2hitMapArm1",300,-15.,15.,200,-15.,15.);
+  
 
 }
 
 //------------------------------------------------------------------------------------------------//
 
 RPixRoadFinder::~RPixRoadFinder(){
-
+  TFile out("outputFile.root","RECREATE");
+  h2hitMapArm0->Write();
+  h2hitMapArm1->Write();
+  out.Close();
+  delete h2hitMapArm0;
+  delete h2hitMapArm1;
 }
 
 //------------------------------------------------------------------------------------------------//
@@ -57,6 +65,9 @@ void RPixRoadFinder::findPattern(){
     for (const auto & _rh : ds_rh2.data){
       PointInPlane thePointAndRecHit;
       thePointAndRecHit.recHit=_rh; 
+      //std::cout<<"Local y = "<<_rh.getPoint().y()<<std::endl;
+      if(CTPPSPixelDetId(myid).arm() == 1) h2hitMapArm1->Fill(_rh.getPoint().x(),_rh.getPoint().y());
+      if(CTPPSPixelDetId(myid).arm() == 0) h2hitMapArm0->Fill(_rh.getPoint().x(),_rh.getPoint().y());
       CLHEP::Hep3Vector localV(_rh.getPoint().x(),_rh.getPoint().y(),_rh.getPoint().z() );
       CLHEP::Hep3Vector globalV = geometry_.localToGlobal(ds_rh2.id,localV);
       thePointAndRecHit.globalPoint=globalV;

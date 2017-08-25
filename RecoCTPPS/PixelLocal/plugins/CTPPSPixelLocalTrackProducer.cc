@@ -23,6 +23,7 @@
 #include "DetectorDescription/Core/interface/DDRotationMatrix.h"
 #include "TMatrixD.h"
 #include "TVectorD.h"
+#include "TFile.h"
 
 //------------------------------------------------------------------------------------------------//
 
@@ -72,11 +73,21 @@ CTPPSPixelLocalTrackProducer::CTPPSPixelLocalTrackProducer(const edm::ParameterS
  
   produces<edm::DetSetVector<CTPPSPixelLocalTrack> > ();
 
+
+  h2hitMapArm0 = new TH2D("h2hitMapArm0_afterPattern","h2hitMapArm0_afterPattern",300,-15.,15.,200,-15.,15.);
+  h2hitMapArm1 = new TH2D("h2hitMapArm1_afterPattern","h2hitMapArm1_afterPattern",300,-15.,15.,200,-15.,15.);
+ 
 }
 
 //------------------------------------------------------------------------------------------------//
 
 CTPPSPixelLocalTrackProducer::~CTPPSPixelLocalTrackProducer(){
+  TFile out("CTPPSPixelLocalTrackProducerOutput.root","RECREATE");
+  h2hitMapArm0->Write();
+  h2hitMapArm1->Write();
+  out.Close();
+  delete h2hitMapArm0;
+  delete h2hitMapArm1;
   delete patternFinder_;
   delete trackFinder_ ;
 }
@@ -90,12 +101,12 @@ void CTPPSPixelLocalTrackProducer::fillDescriptions(edm::ConfigurationDescriptio
   desc.add<std::string>    ("RPixPatterFinderAlgorithm"        , "RPixRoadFinder"              );
   //desc.add<std::string> ("RPixTrackFinderAlgorithm"            , "testTrackingAlgorithm"       );
   desc.add<std::string>    ("RPixTrackFinderAlgorithm"         , "RPixPlaneCombinatoryTracking");
-  desc.addUntracked<uint>  ("RPixTrackMinNumberOfPoints"       , 4                             );
+  desc.addUntracked<uint>  ("RPixTrackMinNumberOfPoints"       , 3                             );
   desc.addUntracked<int>   ("RPixVerbosity"                    , 0                             );
-  desc.add<double>         ("MaximumChi2OverNDF"               , 10.                           );
-  desc.add<double>         ("MaximumChi2RelativeIncreasePerNDF", 0.1                           );
-  desc.add<double>         ("MaximumXLocalDistanceFromTrack"   , 0.3                           );
-  desc.add<double>         ("MaximumYLocalDistanceFromTrack"   , 0.2                           );
+  desc.add<double>         ("MaximumChi2OverNDF"               , 20.                           );
+  desc.add<double>         ("MaximumChi2RelativeIncreasePerNDF", 0.5                           );
+  desc.add<double>         ("MaximumXLocalDistanceFromTrack"   , 0.2                           );
+  desc.add<double>         ("MaximumYLocalDistanceFromTrack"   , 0.3                           );
   desc.addUntracked<int>   ("RPixMaxHitPerPlane"               , 20                            );
   desc.addUntracked<int>   ("RPixMaxHitPerRomanPot"            , 60                            );
   desc.addUntracked<int>   ("RPixMaxTrackPerRomanPot"          , 10                            );
@@ -205,6 +216,9 @@ void CTPPSPixelLocalTrackProducer::produce(edm::Event& iEvent, const edm::EventS
     for(const auto & hit : pattern){
       CTPPSPixelDetId hitDetId = CTPPSPixelDetId(hit.detId);
       CTPPSPixelDetId tmpRomanPotId = hitDetId.getRPId();
+      if(hitDetId.arm() == 1) h2hitMapArm1->Fill(hit.recHit.getPoint().x(),hit.recHit.getPoint().y());
+      if(hitDetId.arm() == 0) h2hitMapArm0->Fill(hit.recHit.getPoint().x(),hit.recHit.getPoint().y());
+      
 
       if(tmpRomanPotId!=romanPotId){ //check that the hits belongs to the same tracking station
         throw cms::Exception("CTPPSPixelLocalTrackProducer") << "Hits in the pattern must belong to the same tracking station";
@@ -218,12 +232,19 @@ void CTPPSPixelLocalTrackProducer::produce(edm::Event& iEvent, const edm::EventS
       else hitOnPlaneMap[hitDetId].push_back(hit); //add the hit on a plane the key
     
     }
-    
+
     trackFinder_->clear();
     trackFinder_->setRomanPotId(romanPotId);
     trackFinder_->setHits(hitOnPlaneMap);
     trackFinder_->setPlaneRotationMatrices(planeRotationMatrixMap);
     trackFinder_->setPointOnPlanes(planePointMap);
+    // This is the correct way
+    // trackFinder_->setZ0(geometry.getRPTranslation(romanPotId).z());
+    // but it looks like that the RP for the pixel stations is not found, so I temporary do like that:
+    double romanPotZPosition = 0.;
+    if(romanPotId.arm() == 0) romanPotZPosition = -220000;
+    if(romanPotId.arm() == 1) romanPotZPosition = +220000;
+    trackFinder_->setZ0(romanPotZPosition);
     trackFinder_->findTracks();
     std::vector<CTPPSPixelLocalTrack> tmpTracksVector = trackFinder_->getLocalTracks();
 

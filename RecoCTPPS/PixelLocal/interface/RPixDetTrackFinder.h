@@ -41,7 +41,8 @@ class RPixDetTrackFinder{
   		void setRomanPotId(CTPPSPixelDetId rpId) {romanPotId_ = rpId;};
 		void setPlaneRotationMatrices(std::map<CTPPSPixelDetId, TMatrixD> planeRotationMatrixMap) { planeRotationMatrixMap_ = planeRotationMatrixMap; }
 		void setPointOnPlanes(std::map<CTPPSPixelDetId, CLHEP::Hep3Vector> planePointMap) { planePointMap_ = planePointMap; }
-  		void setListOfPlanes(std::vector<uint32_t> listOfAllPlanes) {listOfAllPlanes_ = listOfAllPlanes; } 
+  		void setListOfPlanes(std::vector<uint32_t> listOfAllPlanes) { listOfAllPlanes_ = listOfAllPlanes; } 
+  		void setZ0(double z0) { z0_ = z0; }
 
 
 	protected:
@@ -53,6 +54,7 @@ class RPixDetTrackFinder{
   		std::map<CTPPSPixelDetId, CLHEP::Hep3Vector> planePointMap_;
  		uint32_t numberOfPlanesPerPot_;
   		std::vector<uint32_t> listOfAllPlanes_;
+  		double z0_;
 
 };
 
