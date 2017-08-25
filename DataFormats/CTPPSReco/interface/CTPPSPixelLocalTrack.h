@@ -78,7 +78,7 @@ class CTPPSPixelLocalTrack
     ///< covariance matrix size
     static const int covarianceSize = dimension * dimension;
 
-    CTPPSPixelLocalTrack() : z0_(0), chiSquared_(0), valid_(false)
+    CTPPSPixelLocalTrack() : z0_(0), chiSquared_(0), valid_(false), numberOfPointUsedForFit_(0)
     {
     }
 
@@ -91,6 +91,7 @@ class CTPPSPixelLocalTrack
     inline void addHit(unsigned int detId, const CTPPSPixelFittedRecHit &hit)
     {
       track_hits_vector_.find_or_insert(detId).push_back(hit);
+      if(hit.getIsUsedForFit()) numberOfPointUsedForFit_+=2;
     }
 
     inline double getX0() const { return track_params_vector_[0]; }
@@ -126,7 +127,7 @@ class CTPPSPixelLocalTrack
     inline double getChiSquared() const { return chiSquared_; }
     inline void setChiSquared(double & chiSquared) { chiSquared_ = chiSquared; }
 
-    inline double getChiSquaredOverNDF() const { return chiSquared_ / (2*track_hits_vector_.size() - 4); }
+    inline double getChiSquaredOverNDF() const { return chiSquared_ / (2*numberOfPointUsedForFit_ - 4); }
 
     /// returns (x, y) vector
     inline TVector2 getTrackPoint(double z) const 
@@ -177,6 +178,8 @@ class CTPPSPixelLocalTrack
 
     /// fit valid?
     bool valid_;
+
+    int numberOfPointUsedForFit_;
 
 };
 

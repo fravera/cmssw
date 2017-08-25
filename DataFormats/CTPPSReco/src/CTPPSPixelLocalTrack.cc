@@ -35,7 +35,7 @@ TMatrixD CTPPSPixelLocalTrack::trackPointInterpolationCovariance(double z) const
 
 CTPPSPixelLocalTrack::CTPPSPixelLocalTrack(double z0, const TVectorD & track_params_vector, 
       const TMatrixD &par_covariance_matrix, double chiSquared) 
-      : z0_(z0), chiSquared_(chiSquared), valid_(true)
+      : z0_(z0), chiSquared_(chiSquared), valid_(true), numberOfPointUsedForFit_(0)
 {
   for(int i=0; i<dimension; ++i)
   {

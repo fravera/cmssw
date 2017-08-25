@@ -20,7 +20,7 @@
 
 #include <vector>
 #include <map>
-#include "TH2D.h"
+// #include "TH2D.h"
 
 
 class RPixPlaneCombinatoryTracking : public RPixDetTrackFinder{
@@ -57,8 +57,8 @@ class RPixPlaneCombinatoryTracking : public RPixDetTrackFinder{
       return (x == 1 ? x : x * Factorial(x - 1));
     }
 
-    TH2D *h2hitMapArm0;
-    TH2D *h2hitMapArm1;
+    // TH2D *h2hitMapArm0;
+    // TH2D *h2hitMapArm1;
 
 
 };
