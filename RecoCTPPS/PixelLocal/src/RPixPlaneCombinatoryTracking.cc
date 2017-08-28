@@ -8,6 +8,7 @@
 #include "TVector3.h"
 #include "TMath.h"
 #include <math.h>
+#include <algorithm>
 // #include "TFile.h"
 
 //------------------------------------------------------------------------------------------------//
@@ -22,7 +23,8 @@ RPixPlaneCombinatoryTracking::RPixPlaneCombinatoryTracking(edm::ParameterSet con
   maximumXLocalDistanceFromTrack_= param_.getParameter<double>("MaximumXLocalDistanceFromTrack");
   maximumYLocalDistanceFromTrack_= param_.getParameter<double>("MaximumYLocalDistanceFromTrack");
   numberOfPlanesPerPot_ = parameterSet_.getUntrackedParameter<int> ("NumberOfPlanesPerPot"   );
-  maximumChi2RelativeIncreasePerNDF_ = parameterSet_.getParameter<double> ("MaximumChi2RelativeIncreasePerNDF"   );
+  //maximumChi2RelativeIncreasePerNDF_ = parameterSet_.getParameter<double> ("MaximumChi2RelativeIncreasePerNDF"   );
+  //maximumProbDeteriorationPerNDF_ = parameterSet_.getParameter<double> ("MaximumProbDeteriorationPerNDF"   );
 
   if(trackMinNumberOfPoints_<3){
     throw cms::Exception("RPixPlaneCombinatoryTracking") << "Minimum number of planes required for tracking is 3, tracking is not possible with " << trackMinNumberOfPoints_ << " hits";
@@ -214,7 +216,6 @@ void RPixPlaneCombinatoryTracking::findTracks(){
 
     //The loop on the fit of all tracks is done, the track with minimum chiSquared is found
     // and it is verified that it complies with the maximumChi2OverNDF_ requirement
-    if(verbosity_>=1) std::cout<<"Minimum chiSquare over NDF for all the tracks "<<theMinChiSquaredOverNDF<<std::endl;
     if(theMinChiSquaredOverNDF > maximumChi2OverNDF_) break;
 
     //The list of planes not included in the minimum chiSquare track is produced.
@@ -248,25 +249,33 @@ void RPixPlaneCombinatoryTracking::findTracks(){
     }
   
     //I fit all the possible combination of the minimum plane best fit hits plus hits from the other planes
-    for(const auto & pointsAndRef : mapOfAllPointWithAtLeastBestFitSelected){
+    // double theMaxProbability = TMath::Prob(bestTrack.getChiSquared(),bestTrack.getNDF());
+    if(verbosity_>=1) std::cout<<"Minimum chiSquare over NDF for all the tracks "<<theMinChiSquaredOverNDF<<std::endl;
+
+    std::vector<std::pair <std::map<CTPPSPixelDetId, size_t>, std::vector<RPixDetPatternFinder::PointInPlane> > > orderedVectorOfAllPointWithAtLeastBestFitSelected =
+      orderCombinationsPerNumberOrPoints(mapOfAllPointWithAtLeastBestFitSelected);
+    int currentNumberOfPlanes = 0;
+    theMinChiSquaredOverNDF = maximumChi2OverNDF_+1.; //in order to break the loop in case no track is found;
+    bool foundTrackWithCurrentNumberOfPlanes = false;
+    for(const auto & pointsAndRef : orderedVectorOfAllPointWithAtLeastBestFitSelected){
+      int tmpNumberOfPlanes = pointsAndRef.second.size();
+      // If a valid track has been already found with an higher number of planes the loop stops.
+      if(foundTrackWithCurrentNumberOfPlanes && tmpNumberOfPlanes<currentNumberOfPlanes) break;
       CTPPSPixelLocalTrack tmpTrack = fitTrack(pointsAndRef.second);
       double tmpChiSquaredOverNDF = tmpTrack.getChiSquaredOverNDF();
-      // std::cout<<"ChiSquare tmp = "<<tmpChiSquaredOverNDF<<std::endl;
       if(!tmpTrack.isValid() || tmpChiSquaredOverNDF>maximumChi2OverNDF_ || tmpChiSquaredOverNDF==0.) continue; //validity check
-      double ChiSquaredOverNDFCorrectionFactor = TMath::Power(1.-maximumChi2RelativeIncreasePerNDF_,(int)(pointsAndRef.second.size()-trackMinNumberOfPoints_));
-      // std::cout<<"ChiSquare correction factor for "<< pointsAndRef.second.size() << " planes = "<<ChiSquaredOverNDFCorrectionFactor<<std::endl;
-      //it keeps into account that an higher chiSquare is tolerated if more hits are included in the fit
-      //cases in which the correction factor would allow to accept chiSquare higher than maximumChi2OverNDF_
-      //are already considered in the validity check
-      tmpChiSquaredOverNDF*=ChiSquaredOverNDFCorrectionFactor; 
       if(tmpChiSquaredOverNDF<theMinChiSquaredOverNDF){
         theMinChiSquaredOverNDF = tmpChiSquaredOverNDF;
         pointMapWithMinChiSquared = pointsAndRef.first;
         pointsWithMinChiSquared = pointsAndRef.second;
         bestTrack = tmpTrack;
+        currentNumberOfPlanes = tmpNumberOfPlanes;
+        foundTrackWithCurrentNumberOfPlanes = true;
       }
     }
 
+    if(verbosity_>=1) std::cout<<"The best track has " << bestTrack.getNDF()/2 + 2 <<std::endl;
+   
     std::vector<uint32_t>  listOfPlaneNotUsedForFit = listOfAllPlanes_;
     //remove the hits belonging to the tracks from the full list of hits
     for(const auto & hitToErase : pointMapWithMinChiSquared){
@@ -476,5 +485,20 @@ bool RPixPlaneCombinatoryTracking::calculatePointOnDetector(CTPPSPixelLocalTrack
   return true;
 
 }
+//------------------------------------------------------------------------------------------------//
+
+// The method sorts the possible point combinations in order to process before before track fitting
+// with the highest possible number of points
+std::vector<std::pair <std::map<CTPPSPixelDetId, size_t>, std::vector<RPixDetPatternFinder::PointInPlane> > > 
+  RPixPlaneCombinatoryTracking::orderCombinationsPerNumberOrPoints(
+  std::map< std::map<CTPPSPixelDetId, size_t>, std::vector<RPixDetPatternFinder::PointInPlane> > inputMap){
+
+  std::vector<std::pair <std::map<CTPPSPixelDetId, size_t>, std::vector<RPixDetPatternFinder::PointInPlane> > > sortedVector(inputMap.begin(),inputMap.end());
+  std::sort(sortedVector.begin(),sortedVector.end(),functionForPlaneOrdering);
+
+  return sortedVector;
+
+}
+
 
 

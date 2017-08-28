@@ -36,7 +36,8 @@ class RPixPlaneCombinatoryTracking : public RPixDetTrackFinder{
     int verbosity_;
     uint32_t trackMinNumberOfPoints_;
     double maximumChi2OverNDF_;
-    double maximumChi2RelativeIncreasePerNDF_;
+    // double maximumChi2RelativeIncreasePerNDF_;
+    // double maximumProbDeteriorationPerNDF_;
     double maximumXLocalDistanceFromTrack_;
     double maximumYLocalDistanceFromTrack_;
     std::vector<std::vector<uint32_t> > possiblePlaneCombinations_;
@@ -51,6 +52,13 @@ class RPixPlaneCombinatoryTracking : public RPixDetTrackFinder{
         std::map< std::map<CTPPSPixelDetId, size_t>, std::vector<RPixDetPatternFinder::PointInPlane> > &outputMap);
     std::map< std::map<CTPPSPixelDetId, size_t>, std::vector<RPixDetPatternFinder::PointInPlane> > produceAllHitCombination(std::vector<std::vector<uint32_t> > inputPlaneCombination);
     bool calculatePointOnDetector(CTPPSPixelLocalTrack track, CTPPSPixelDetId planeId, TVector3 &planeLineIntercept);
+    static bool functionForPlaneOrdering(
+        std::pair<std::map<CTPPSPixelDetId, size_t>, std::vector<RPixDetPatternFinder::PointInPlane> > a,
+        std::pair<std::map<CTPPSPixelDetId, size_t>, std::vector<RPixDetPatternFinder::PointInPlane> > b) { 
+        return (a.second.size() > b.second.size()); }
+    std::vector<std::pair <std::map<CTPPSPixelDetId, size_t>, std::vector<RPixDetPatternFinder::PointInPlane> > > orderCombinationsPerNumberOrPoints(
+        std::map< std::map<CTPPSPixelDetId, size_t>, std::vector<RPixDetPatternFinder::PointInPlane> > inputMap);
+
 
     inline uint32_t Factorial(uint32_t x) {
       if(x==0) return 1;

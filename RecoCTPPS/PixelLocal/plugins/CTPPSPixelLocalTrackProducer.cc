@@ -101,10 +101,11 @@ void CTPPSPixelLocalTrackProducer::fillDescriptions(edm::ConfigurationDescriptio
   desc.add<std::string>    ("RPixPatterFinderAlgorithm"        , "RPixRoadFinder"              );
   //desc.add<std::string> ("RPixTrackFinderAlgorithm"            , "testTrackingAlgorithm"       );
   desc.add<std::string>    ("RPixTrackFinderAlgorithm"         , "RPixPlaneCombinatoryTracking");
-  desc.addUntracked<uint>  ("RPixTrackMinNumberOfPoints"       , 4                             );
+  desc.addUntracked<uint>  ("RPixTrackMinNumberOfPoints"       , 3                             );
   desc.addUntracked<int>   ("RPixVerbosity"                    , 0                             );
   desc.add<double>         ("MaximumChi2OverNDF"               , 5.                            );
-  desc.add<double>         ("MaximumChi2RelativeIncreasePerNDF", 0.5                           );
+  // desc.add<double>         ("MaximumChi2RelativeIncreasePerNDF", 0.5                           );
+  // desc.add<double>         ("MaximumProbDeteriorationPerNDF"   , 0.1                           );
   desc.add<double>         ("MaximumXLocalDistanceFromTrack"   , 0.2                           );
   desc.add<double>         ("MaximumYLocalDistanceFromTrack"   , 0.3                           );
   desc.addUntracked<int>   ("RPixMaxHitPerPlane"               , 20                            );

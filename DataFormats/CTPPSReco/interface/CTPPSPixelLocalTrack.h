@@ -91,7 +91,7 @@ class CTPPSPixelLocalTrack
     inline void addHit(unsigned int detId, const CTPPSPixelFittedRecHit &hit)
     {
       track_hits_vector_.find_or_insert(detId).push_back(hit);
-      if(hit.getIsUsedForFit()) numberOfPointUsedForFit_+=2;
+      if(hit.getIsUsedForFit()) ++numberOfPointUsedForFit_;
     }
 
     inline double getX0() const { return track_params_vector_[0]; }
@@ -128,6 +128,8 @@ class CTPPSPixelLocalTrack
     inline void setChiSquared(double & chiSquared) { chiSquared_ = chiSquared; }
 
     inline double getChiSquaredOverNDF() const { return chiSquared_ / (2*numberOfPointUsedForFit_ - 4); }
+
+    inline int getNDF() const {return (2*numberOfPointUsedForFit_ - 4); }
 
     /// returns (x, y) vector
     inline TVector2 getTrackPoint(double z) const 
