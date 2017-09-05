@@ -56,15 +56,15 @@ class patternProducer : public edm::stream::EDProducer<>
 public:
   explicit patternProducer(const edm::ParameterSet& param);
  
-  ~patternProducer();
+  ~patternProducer() override;
 
   typedef std::pair<CLHEP::Hep3Vector,CTPPSPixelDetId> PointInPlane;
   typedef std::vector<PointInPlane> Road;
   static void fillDescriptions(edm::ConfigurationDescriptions & descriptions);
-  virtual void produce(edm::Event&, const edm::EventSetup&) override;
+  void produce(edm::Event&, const edm::EventSetup&) override;
 
-  virtual void beginStream(const edm::StreamID) override;
-  virtual void endStream() override;
+  void beginStream(const edm::StreamID) override;
+  void endStream() override;
   
 private:
   edm::ParameterSet param_;

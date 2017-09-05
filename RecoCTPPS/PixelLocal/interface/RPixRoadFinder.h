@@ -44,8 +44,8 @@ class RPixRoadFinder : public RPixDetPatternFinder{
 
   public:
     explicit RPixRoadFinder(const edm::ParameterSet& param);
-    ~RPixRoadFinder();
-    void findPattern();
+    ~RPixRoadFinder() override;
+    void findPattern() override;
 
   private:
     edm::ParameterSet param_;

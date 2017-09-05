@@ -133,7 +133,7 @@ void RPixRoadFinder::findPattern(){
 
   if(verbosity_)std::cout << "+-+-+-+-+-+-    Number of pseudo tracks " << patternVector_.size() <<std::endl;
 
-  if(patternVector_.size()>0)
+  if(!patternVector_.empty())
     for (auto const & ptrack : patternVector_){
 
       if(verbosity_) std::cout << "     ptrack size = "<<ptrack.size() << std::endl;

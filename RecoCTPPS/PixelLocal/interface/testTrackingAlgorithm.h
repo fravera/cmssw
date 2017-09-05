@@ -26,7 +26,7 @@ class testTrackingAlgorithm : public RPixDetTrackFinder{
 
 	public:
 		testTrackingAlgorithm(edm::ParameterSet const& parameterSet);
-		~testTrackingAlgorithm();
+		~testTrackingAlgorithm() override;
 		
 		void findTracks() override;
 		void initialize() override {return;}

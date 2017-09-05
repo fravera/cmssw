@@ -45,9 +45,9 @@ class CTPPSPixelLocalTrackProducer : public edm::stream::EDProducer<>
 public:
   explicit CTPPSPixelLocalTrackProducer(const edm::ParameterSet& parameterSet);
  
-  ~CTPPSPixelLocalTrackProducer();
+  ~CTPPSPixelLocalTrackProducer() override;
 
-  virtual void produce(edm::Event&, const edm::EventSetup&) override;
+  void produce(edm::Event&, const edm::EventSetup&) override;
   static void fillDescriptions(edm::ConfigurationDescriptions & descriptions);
 
 private:

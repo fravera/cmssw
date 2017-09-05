@@ -93,7 +93,7 @@ void patternProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 // run reconstruction
   std::vector<Road> roads;
-  if (rpRh->size()){
+  if (!rpRh->empty()){
     run(*rpRh, *geometry, roads);
   }
 
@@ -217,7 +217,7 @@ void patternProducer::run(const edm::DetSetVector<CTPPSPixelRecHit> &input, cons
 
   if(verbosity_)std::cout << "+-+-+-+-+-+-    Number of pseudo tracks " << roads.size() <<std::endl;
 
-  if(roads.size()>0)
+  if(!roads.empty())
     for (auto const & ptrack : roads){
 
       if(verbosity_) std::cout << "     ptrack size = "<<ptrack.size() << std::endl;

@@ -7,7 +7,7 @@
 #include "TVectorD.h"
 #include "TVector3.h"
 #include "TMath.h"
-#include <math.h>
+#include <cmath>
 #include <algorithm>
 // #include "TFile.h"
 
@@ -288,7 +288,7 @@ void RPixPlaneCombinatoryTracking::findTracks(){
       listOfPlaneNotUsedForFit.erase(planeIt);
       hitMapElement->second.erase(hitMapElement->second.begin()+hitToErase.second);
       //if the plane at which the hit was erased ie empty it is removed from the hit map
-      if(hitMapElement->second.size() == 0) hitMap_.erase(hitMapElement);
+      if(hitMapElement->second.empty()) hitMap_.erase(hitMapElement);
     }
 
     //search for hit on the other planes which may belong to the same track

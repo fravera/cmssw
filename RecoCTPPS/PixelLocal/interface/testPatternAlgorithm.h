@@ -28,9 +28,9 @@ class testPatternAlgorithm : public RPixDetPatternFinder{
   
 public:
   testPatternAlgorithm(edm::ParameterSet const& parameterSet) : RPixDetPatternFinder(parameterSet) {}
-  ~testPatternAlgorithm() {}
+  ~testPatternAlgorithm() override {}
   
-  void findPattern() {
+  void findPattern() override {
     return;
   }
   

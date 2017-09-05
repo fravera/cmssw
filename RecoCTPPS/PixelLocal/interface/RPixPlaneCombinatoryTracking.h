@@ -27,7 +27,7 @@ class RPixPlaneCombinatoryTracking : public RPixDetTrackFinder{
 
   public:
     RPixPlaneCombinatoryTracking(edm::ParameterSet const& parameterSet);
-    ~RPixPlaneCombinatoryTracking();
+    ~RPixPlaneCombinatoryTracking() override;
     void initialize() override;
     void findTracks() override;
 

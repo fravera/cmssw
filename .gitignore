@@ -11,3 +11,5 @@ runTrackFinder.sh
 run_only_CTPPS_cfg_CLU_REC_DAQ_patt_real_mem_Fabio.py
 submitTrackFinder.pl
 RPixGeometryCorrections.xml
+runTrackFinder_SIM.sh
+run_only_CTPPS_cfg_CLU_REC_DAQ_patt_real_mem_Fabio_SIM.py
